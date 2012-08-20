@@ -6,8 +6,8 @@ Contact form class definitions.
 
 import logging
 from smtplib import SMTPException
+import floppyforms as forms
 
-from django import forms
 from django.core import mail
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
@@ -39,11 +39,11 @@ class BaseContactForm(forms.Form):
         Template used to render the email message. Defaults to `'envelope/email_body.txt'`.
 
     """
-    sender = forms.CharField(label=_("From"), max_length=70)
-    email = forms.EmailField(label=_("Email"))
-    subject = forms.CharField(label=_("Subject"), max_length=127)
+    sender = forms.CharField(label=_("Name"), max_length=70, widget=forms.TextInput(attrs={'placeholder': _("Name") }))
+    email = forms.EmailField(label=_("Email"), widget=forms.EmailInput(attrs={'placeholder': _("Email") }))
+    subject = forms.CharField(label=_("Subject"), max_length=127, widget=forms.TextInput(attrs={'placeholder': _("Subject") }))
     message = forms.CharField(label=_("Message"), max_length=1000,
-                              widget=forms.Textarea())
+                              widget=forms.Textarea(attrs={'placeholder': _("Message") }))
 
     subject_intro = settings.SUBJECT_INTRO
     from_email = settings.FROM_EMAIL
@@ -147,7 +147,7 @@ class ContactForm(BaseContactForm):
     """
     category_choices = settings.CONTACT_CHOICES
     category = forms.ChoiceField(label=_("Category"),
-                                 choices=category_choices)
+                                 choices=category_choices, widget=forms.Select(attrs={'id': "customDropdown" }))
 
     def __init__(self, *args, **kwargs):
         u"""
